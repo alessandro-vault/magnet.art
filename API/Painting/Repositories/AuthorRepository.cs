@@ -21,5 +21,8 @@ public class AuthorRepository : BaseRepository, IAuthorRepository
         await _context.Authors.AddAsync(author);
     }
 
-
+    public async Task<Author> FindByNickName(string nickname)
+    {
+        return await _context.Authors.FirstOrDefaultAsync(p => p.NickName == nickname);
+    }
 }

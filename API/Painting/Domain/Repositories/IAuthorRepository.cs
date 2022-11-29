@@ -7,4 +7,5 @@ public interface IAuthorRepository
 {
     Task<IEnumerable<Author>> ListAsync();
     Task AddAsync(Author author);
+    Task<Author> FindByNickName(string nickname);
 }
