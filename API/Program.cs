@@ -1,4 +1,14 @@
+using API.Painting.Domain.Repositories;
+using API.Painting.Domain.Services;
+using API.Painting.Repositories;
+using API.Painting.Services;
+using API.Shared.Domain.Repositories;
 using API.Shared.Persistence.Contexts;
+using API.Shared.Persistence.Repositories;
+using API.Training.Domain.Repositories;
+using API.Training.Domain.Services;
+using API.Training.Repositories;
+using API.Training.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +35,21 @@ builder.Services.AddDbContext<AppDbContext>(
 // Lowercase routes
 builder.Services.AddRouting(opts => opts.LowercaseUrls = true);
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
+builder.Services.AddScoped<IProviderService, ProviderService>();
+
+// AutoMapper Configuration
+builder.Services.AddAutoMapper(
+    typeof(API.Painting.Mapping.ModelToResourceProfile),
+    typeof(API.Painting.Mapping.ResourceToModelProfile),
+    typeof(API.Training.Mapping.ModelToResourceProfile),
+    typeof(API.Training.Mapping.ResourceToModelProfile)
+);
+
 var app = builder.Build();
 
 // Validation for Database Objects are created
@@ -42,7 +67,11 @@ using (var context = scope.ServiceProvider.GetService<AppDbContext>())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(opts =>
+    {
+        opts.SwaggerEndpoint("v1/swagger.json", "v1");
+        opts.RoutePrefix = "swagger";
+    });
 }
 
 app.UseHttpsRedirection();
