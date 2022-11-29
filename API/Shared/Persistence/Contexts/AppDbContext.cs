@@ -1,4 +1,5 @@
 ﻿using API.Painting.Domain.Models;
+using API.Shared.Extensions;
 using API.Training.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,5 +40,7 @@ public class AppDbContext : DbContext
         builder.Entity<Provider>().HasIndex(p => p.Name).IsUnique(); // No permite que se registre dos providers con el mismo name
         builder.Entity<Provider>().HasIndex(p => p.ApiUrl).IsUnique(); // No permite que existan registrados dos providers con el mismo apiUrl.
         builder.Entity<Provider>().Property(p => p.KeyRequired).HasDefaultValue(false);
+        
+        builder.UseSnakeCaseNamingConvention();
     }
 }
